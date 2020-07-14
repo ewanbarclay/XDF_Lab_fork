@@ -1,43 +1,44 @@
 
 
+In this project you analyse imaging from the Hubble Space Telescope. Specifically, the Hubble Ultra Deep Field, also known (due to a re-branding exercise) as the eXtreme Deep Field (XDF).
+
+Hubble imaging of the XDF consists of imaging in 8 optical and near-IR filters stretching from the blue end of the optical (~400nm) to almost 2000nm in the near-IR.
+
+For each filter there are a pair of images, a science (sci) and weight (wht) images. These respectively contain the signal and an estimate of the noise in each pixel. For the science image the units are electrons per second (e/s).
 
 
-
-The units of each pixel are in e/s (electrons per second).
-
-Much of the image is occupied by unobserved pixels. These will have values of exactly '0.0'. These pixels should be excluded from the analysis.
-
-Some of the pixels have erroneously high or low values due to defects in the detector and/or processing issues.
-
+Due to the way in which these high-level science images were produced many of the pixels have zero signal. A mask file is provided to exclude these pixels.
 
 
 
 # ----- basic
 
+[example1.py]
 
-# 1.1 The distribution of pixel values will contain a contribution from a gaussian centred around ~0.0 corresponding to the noise combined with a positive distribution corresponding to the real signal.
+# 1a: The distribution of pixel values will contain a contribution from a gaussian centred around ~0.0 corresponding to the noise combined with a positive distribution corresponding to the real signal.
 
 - Model the noise as a gaussian and estimate \sigma. HINT: there should be no signal contribution to the negative pixels so you can use them to measure $\sigma$. $\sigma$ of just the negative half of a distribution is simply $-P_{31.7}$.
 
-- Exclude pixels with magnitude $>10\sigma$ and plot both a density histogram (HINT: use plt.hist(..., density = True)) of the pixel distribution and a normal distribution with the same $\sigma$. 
+- Exclude pixels with magnitude $>10\sigma$ and plot both a density histogram (HINT: use plt.hist(..., density = True)) of the pixel distribution and a normal distribution with the same $\sigma$.
 
+[example2.py]
 
-# Produce figures (.png) of the science and weight images
+# 1b: Produce plots of each un-masked weight map. You should do this efficiently with a loop. DO NOT simply repeat the code 8 times. You should notice that the weight maps for the ['f435w','f606w', 'f775w','f850lp'] are different from those for ['f105w','f125w','f140w','f160w']. This is because images in the former filters were obtained using the advanced camera for surveys (ACS) instrument while the latter were obtained with Wide Field Camera 3 (WFC3). ACS and WFC3 have different field-of-views.
 
+[example2.py, example3.py, example4.py]
 
-# Produce a colour (RGB) image of a 200 pixel wide region centred on middle of the image.
-
-
-
-
-
+# 1c: Produce a false-colour image of the entire masked XDF using all 8 filters. You should define 3 groups of consecutive filters (e.g. ['f435w','f606w'], ['f775w','f850lp'], ['f105w','f125w','f140w','f160w']), combine each group, and then combine those stacks together into an RGB image. Congratulations you've now created your own pretty HUDF image.
 
 
 
-# 2 --- create a detection image
-
-Using example2.py as a guide create a detection image by stacking the F105W, F125W, F140W, and F160W images together. You will use this image to detect faint sources.
 
 
 
-# 3 --- run image segementation on the
+# 2 --- Detecting sources
+
+[example3.py]
+
+# 2a: Create a detection image by stacking the F105W, F125W, F140W, and F160W images together. You will use this image to detect faint sources.
+
+
+# 3 --- Photometry of sources
