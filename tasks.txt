@@ -1,0 +1,43 @@
+
+
+
+
+
+The units of each pixel are in e/s (electrons per second).
+
+Much of the image is occupied by unobserved pixels. These will have values of exactly '0.0'. These pixels should be excluded from the analysis.
+
+Some of the pixels have erroneously high or low values due to defects in the detector and/or processing issues.
+
+
+
+
+# ----- basic
+
+
+# 1.1 The distribution of pixel values will contain a contribution from a gaussian centred around ~0.0 corresponding to the noise combined with a positive distribution corresponding to the real signal.
+
+- Model the noise as a gaussian and estimate \sigma. HINT: there should be no signal contribution to the negative pixels so you can use them to measure $\sigma$. $\sigma$ of just the negative half of a distribution is simply $-P_{31.7}$.
+
+- Exclude pixels with magnitude $>10\sigma$ and plot both a density histogram (HINT: use plt.hist(..., density = True)) of the pixel distribution and a normal distribution with the same $\sigma$. 
+
+
+# Produce figures (.png) of the science and weight images
+
+
+# Produce a colour (RGB) image of a 200 pixel wide region centred on middle of the image.
+
+
+
+
+
+
+
+
+# 2 --- create a detection image
+
+Using example2.py as a guide create a detection image by stacking the F105W, F125W, F140W, and F160W images together. You will use this image to detect faint sources.
+
+
+
+# 3 --- run image segementation on the
