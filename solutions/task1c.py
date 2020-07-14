@@ -6,7 +6,7 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 
 
-image_dir = '../data/original' # image directory relative to this script
+image_dir = '../data' # image directory relative to this script
 
 mask = fits.getdata(f'{image_dir}/mask.fits') # read in the image mask
 
@@ -65,4 +65,4 @@ ax = fig.add_axes((0.0, 0.0, 1.0, 1.0)) # define axes to cover entire field
 ax.axis('off') # turn off axes frame, ticks, and labels
 
 ax.imshow(rgb) # shouldn't see much because the scale is dominated by outlier pixels
-fig.savefig('XDF_rgb.png')
+fig.savefig('figures/XDF_rgb.png')

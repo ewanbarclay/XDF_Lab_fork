@@ -10,7 +10,7 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 
 
-image_dir = '../data/original' # define image directory relative to this script
+image_dir = '../data' # define image directory relative to this script
 
 f_RGB = {'R': 'f775w', 'G': 'f606w', 'B': 'f435w'} # define the images corresponding to the RGB channels
 

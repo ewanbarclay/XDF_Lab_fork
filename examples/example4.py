@@ -12,7 +12,7 @@ save = False
 
 # --- combine (stack) a list of images together
 
-image_dir = '../data/original' # image directory relative to this script
+image_dir = '../data' # image directory relative to this script
 
 mask = fits.getdata(f'{image_dir}/mask.fits') # read in the image mask
 
@@ -29,6 +29,9 @@ combined_wht = np.zeros(shape)
 for f in filters:
     combined_sci += sci[f] * wht[f]
     combined_wht += wht[f]
+
+
+# --- NOTE: this image can be used "as-is" or saved as a numpy array and read in later. To read back in simply use "array = np.load(filename)"
 
 
 if save:

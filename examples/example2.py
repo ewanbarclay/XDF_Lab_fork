@@ -7,7 +7,7 @@
 import numpy as np
 from astropy.io import fits
 
-image_dir = '../data/original' # define image directory relative to this script
+image_dir = '../data' # define image directory relative to this script
 
 f = 'f125w' # filter
 

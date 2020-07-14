@@ -23,22 +23,43 @@ Due to the way in which these high-level science images were produced many of th
 
 [example2.py]
 
-# 1b: Produce plots of each un-masked weight map. You should do this efficiently with a loop. DO NOT simply repeat the code 8 times. You should notice that the weight maps for the ['f435w','f606w', 'f775w','f850lp'] are different from those for ['f105w','f125w','f140w','f160w']. This is because images in the former filters were obtained using the advanced camera for surveys (ACS) instrument while the latter were obtained with Wide Field Camera 3 (WFC3). ACS and WFC3 have different field-of-views.
+# 1b: Produce plots of each un-masked weight map. You should do this efficiently with a loop. DO NOT simply repeat the code 8 times. You should notice that the weight maps for the ['f435w','f606w', 'f775w','f850lp'] are different from those for ['f105w','f125w','f140w','f160w']. This is because images in the former filters were obtained using the advanced camera for surveys (ACS) instrument while the latter were obtained with Wide Field Camera 3 (WFC3). ACS and WFC3 have different field-of-views. For the WFC3 filters also notice the "holes" in the weight maps corresponding to bad areas of the detector (camera).
 
 [example2.py, example3.py, example4.py]
 
-# 1c: Produce a false-colour image of the entire masked XDF using all 8 filters. You should define 3 groups of consecutive filters (e.g. ['f435w','f606w'], ['f775w','f850lp'], ['f105w','f125w','f140w','f160w']), combine each group, and then combine those stacks together into an RGB image. Congratulations you've now created your own pretty HUDF image.
-
-
-
+# 1c: Produce a false-colour image of the entire masked XDF using all 8 filters. You should define 3 groups of consecutive filters (e.g. ['f435w','f606w'], ['f775w','f850lp'], ['f105w','f125w','f140w','f160w']), combine each group, and then combine those stacks together into an RGB image. Congratulations you've now created your own pretty HUDF image. By choosing different filters in each group and playing with the scaling you can make an entirely unique and original incarnation.
 
 
 
 # 2 --- Detecting sources
 
+Now we're going to detect sources in a portion of the HUDF.
+
 [example3.py]
 
-# 2a: Create a detection image by stacking the F105W, F125W, F140W, and F160W images together. You will use this image to detect faint sources.
+# 2a: Create a detection science and weight image by stacking the F105W, F125W, F140W, and F160W images together. You will use this image to detect faint sources.
+
+[example5.py]
+
+# 2b: Create a significance map of the central 400 pixels of the image.
+
+[example6.py]
+
+# 2c: Create a segmentation image (with no de-blending) of the region assuming npixels = 5 and threshold = 2.5. Systematically explore the impact of changing npixels (must be an integer) and threshold on the number of sources detected.
+
+[example6.py]
+
+# 2d: Sticking with npixels = 5 and threshold = 2.5 now explore the impact of the parameters that control de-blending on the number of sources.
+
+[example7.py]
+
+# 2e: measure the flux (in e/s) of all the sources. To do this you can combine the segmentation map with the original science image. Plot a histogram. Do the same for the deblended image.
+
+[example7.py]
+
+# 2f: using your detection image segmentation map measure the flux of every object in every single band and create a catalogue.
 
 
-# 3 --- Photometry of sources
+# 3 --- Finding high-redshift galaxies
+
+High-redshift galaxies can be identified using the Lyman-break technique. This takes advantage of a strong break in the spectrum of galaxies caused by the absorption of ionising photons by inter-stellar and inter-galactic hydrogen. 

@@ -3,11 +3,11 @@
 import numpy as np
 from astropy.io import fits
 
-save = False
+save = True
 
 # --- create a near-IR detection image by combining (stacking) a list of images together
 
-image_dir = '../data/original' # image directory relative to this script
+image_dir = '../data' # image directory relative to this script
 
 filters = ['f105w','f125w','f140w','f160w'] # list of images to combine (stack)
 
@@ -27,6 +27,5 @@ combined_sci /= combined_wht
 
 if save:
 
-    filename = '_'.join(filters)
-    np.save(f'{image_dir}/{filename}_sci.npy', combined_sci)
-    np.save(f'{image_dir}/{filename}_wht.npy', combined_wht)
+    np.save('data/detection_sci.npy', combined_sci)
+    np.save('data/detection_wht.npy', combined_wht)

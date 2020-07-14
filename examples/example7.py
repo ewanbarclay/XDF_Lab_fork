@@ -1,7 +1,7 @@
 
 
 
-# --- Building on example 2 in this example you will also use the weight (wht) map to obtain an estimate of the significance of each pixel.
+# --- In this example we look at the properties of one of the sources identified by segmentation.
 
 
 import numpy as np
@@ -18,9 +18,6 @@ mask = fits.getdata(f'{image_dir}/mask.fits') # read in the image mask
 sci = np.ma.masked_array(sci, mask = mask) # apply the mask to our science image
 wht = np.ma.masked_array(wht, mask = mask) # apply the mask to our weight image
 
-
-
-
 # --- cut out a portion of the image for analysis
 
 x = 2500 # pixel x-centre of cutout, must be an integer
@@ -35,20 +32,36 @@ wht = wht[x-r:x+r, y-r:y+r] # cutout a portion of the weight image
 noise = 1./np.sqrt(wht) # conversion from weight to noise
 sig = sci/noise # signifance map
 
-# --- plot the cutout significance map
 
+
+# --- now run segmentation on the image.
+
+from photutils import detect_sources
 import matplotlib.pyplot as plt
 
-plt.imshow(sig, vmin=-2, vmax = 50) # set scale so max significance is 50
+threshold = 2.5 # require each pixel have a significance of >2.5 (since we're using the significance image)
+npixels = 5 # require at least 5 connected pixels
+
+segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
+
+# --- let's now plot the segmentation map but only for a single source
+
+i = 11
+masked_segm = np.ma.masked_where(segm.data != i, segm)
+
+plt.imshow(masked_segm, cmap = 'rainbow') # plot masked segmentation map
 plt.show()
 
+# --- let's now plot the science (flux) map but only for the same single source
 
-# --- the above figure can be improved by using two difference scales: one for pixels sig<2 and one for those above. This nicely highlights pixels above some noise threshold. To do this we first plot the map with sig<2 and then plot a masked image o pixels with sig>threshold
+masked_sci = np.ma.masked_where(segm.data != i, sci)
 
-import numpy.ma as ma
-
-threshold = 2
-
-plt.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys_r')
-plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
+plt.imshow(masked_sci, cmap = 'rainbow') # plot masked segmentation map
 plt.show()
+
+# --- now lets determine the total flux of that same source by simply summing the pixels
+
+print(np.sum(masked_sci))
+print(np.sum(sci[np.where(segm.data==i)]))
+
+# both these methods work
