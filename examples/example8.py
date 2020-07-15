@@ -44,37 +44,17 @@ npixels = 5 # require at least 5 connected pixels
 
 segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
 
-# --- let's now plot the segmentation map but only for a single source
+i = 11
 
-i = 11 # this corresponds to the 11th object NOT the 12th. The 0 (zero) index corresponds to the background.
+# --- lets again determine the total flux of that same source by simply summing the pixels on the orginal science image where the segmentation map = the index of our target galaxy:
 
-masked_segm = np.ma.masked_where(segm.data != i, segm)
+signal = np.sum(sci[np.where(segm.data==i)])
 
-plt.imshow(masked_segm, cmap = 'rainbow') # plot masked segmentation map
-plt.show()
+print(f'the signal is: {signal}')
 
-# --- let's now plot the science (flux) map but only for the same single source
+# --- the signal alone isn't very useful, we need an estimate of the uncertainty or error. The error is the sqrt(sum(noise_i**2))
 
-masked_sci = np.ma.masked_where(segm.data != i, sci)
+error = np.sqrt(np.sum(noise[np.where(segm.data==i)]**2))
 
-plt.imshow(masked_sci, cmap = 'rainbow') # plot masked segmentation map
-plt.show()
-
-
-# --- instead of plotting the entire image we can plot a zoom in of the object we want. To do this we can use the slice provided by segmentation object
-
-slices = segm.slices[i-1] # a pair of python slice objects NOTE: the -1 is necessary as slices are only provided for objects not the background. The first object would be segm.slices[0] NOT segm.slices[1] because of python indexing convention. BE CAREFUL.
-
-plt.imshow(sci[slices], cmap = 'bone') # apply slice to science image
-plt.show()
-
-
-# --- now lets determine the total flux of that same source by simply summing the pixels
-
-# we could simply sum the masked science image (masked_sci):
-
-print(f'signal using masked science image: {np.sum(masked_sci)}')
-
-# or, avoiding previous steps only sum pixels on the orginal science image where the segmentation map = the index of our target galaxy:
-
-print(f'signal using science image + np.where command on segmentation map: {np.sum(sci[np.where(segm.data==i)])}')
+print(f'the error (noise) is: {error}')
+print(f'the signal-to-noise is: {signal/error}')

@@ -10,8 +10,8 @@ wht = np.load('data/detection_wht.npy') # read detection wht image
 
 # --- cut out a portion of the image for analysis
 
-x = sci.shape[0] // 2 # x-center of the image
-y = sci.shape[1] // 2 # y-center of the image
+x = 3100 # x-center of the image
+y = 1800 # y-center of the image
 r = 200 # width/2 of cutout, must be int
 
 sci = sci[x-r:x+r, y-r:y+r] # cutout a portion of the science image

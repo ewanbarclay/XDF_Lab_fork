@@ -1,6 +1,6 @@
 
 
-In this project you analyse imaging from the Hubble Space Telescope. Specifically, the Hubble Ultra Deep Field, also known (due to a re-branding exercise) as the eXtreme Deep Field (XDF).
+In this project you analyse imaging from the Hubble Space Telescope. Specifically, the Hubble Ultra Deep Field, also known (due to a re-branding exercise) as the eXtreme Deep Field (XDF). The ultimately aim is to find an example of a high-redshift galaxy.
 
 Hubble imaging of the XDF consists of imaging in 8 optical and near-IR filters stretching from the blue end of the optical (~400nm) to almost 2000nm in the near-IR.
 
@@ -41,11 +41,11 @@ Now we're going to detect sources in a portion of the HUDF.
 
 [example5.py]
 
-# 2b: Create a significance map of the central 400 pixels of the image.
+# 2b: Create a significance map of the central 400 pixel wide area centred on (3100, 1800).
 
 [example6.py]
 
-# 2c: Create a segmentation image (with no de-blending) of the region assuming npixels = 5 and threshold = 2.5. Systematically explore the impact of changing npixels (must be an integer) and threshold on the number of sources detected.
+# 2c: Create a segmentation image (with no de-blending) of the same region assuming npixels = 5 and threshold = 2.5. Systematically explore the impact of changing npixels (must be an integer) and threshold on the number of sources detected.
 
 [example6.py]
 
@@ -53,13 +53,27 @@ Now we're going to detect sources in a portion of the HUDF.
 
 [example7.py]
 
-# 2e: measure the flux (in e/s) of all the sources. To do this you can combine the segmentation map with the original science image. Plot a histogram. Do the same for the deblended image.
+# 2e: measure the signal (e/s) of all the sources in the region. To do this you can combine the segmentation map with the detection science image. Plot a histogram. Do the same for the de-blended image and discuss the difference.
 
-[example7.py]
+[example7.py, example8.py]
 
-# 2f: using your detection image segmentation map measure the flux of every object in every single band and create a catalogue.
+# 2f: using the original (simple, un-blended) segmentation map measure the signal and noise (or error) of every object in every single band and create a dictionary catalogue. Save this catalogue for use later.
 
 
 # 3 --- Finding high-redshift galaxies
 
-High-redshift galaxies can be identified using the Lyman-break technique. This takes advantage of a strong break in the spectrum of galaxies caused by the absorption of ionising photons by inter-stellar and inter-galactic hydrogen. 
+High-redshift galaxies can be identified using the Lyman-break technique. This takes advantage of a strong break in the spectrum of galaxies caused by the absorption of ionising photons by inter-stellar and inter-galactic hydrogen.
+
+[example9.py]
+
+# 3a: Read in you catalogue and convert the signal into a flux (nJy) using the conversion dictionary in example9.py. Plot f_{f105w}/f_{125w} vs. f_{f850lp}/f_{105w} for all your objects.
+
+
+# 3b: Building on 3a we can now apply a (relatively) simple set of selection criteria to identify distant galaxies.
+
+expand the selection criteria discussion.
+
+
+[example7.py]
+
+# 3c: Make cut out images of your candidate(s), if you have any. This could be based simply on the detection image, your RGB image, or the individual filter images. HINT:

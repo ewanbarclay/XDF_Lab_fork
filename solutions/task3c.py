@@ -23,11 +23,23 @@ noise = 1./np.sqrt(wht) # conversion from weight to noise
 sig = sci/noise # signifance map
 
 
+# --- now run segmentation on the image
 
-# --- colour the pixels by significance
+from photutils import detect_sources
 
 threshold = 2.5
+npixels = 5
 
-plt.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys_r') # plot all pixels and scale between significance = -threshold to threshold
-plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50) # only plot pixels with significance > threshold
-plt.show()
+segm = detect_sources(sig, threshold, npixels)
+
+
+# --- loop through candidates and show cutouts of the detection image
+
+ids = [83] # list of IDs of candidates
+
+for id in ids:
+
+    slices = segm.slices[id-1]
+
+    plt.imshow(sci[slices], cmap = 'bone') # apply slice to science image
+    plt.show()
