@@ -23,9 +23,9 @@ wht = np.ma.masked_array(wht, mask = mask) # apply the mask to our weight image
 
 # --- cut out a portion of the image for analysis
 
-x = 2500 # pixel x-centre of cutout, must be an integer
-y = 2500 # pixel y-centre of cutout, must be an integer
-r = 100 # width/2 of cutout, must be int
+x = sci.shape[0] // 2 # pixel x-centre of cutout, must be an integer
+y = sci.shape[1] // 2  # pixel y-centre of cutout, must be an integer
+r = 150
 
 sci = sci[x-r:x+r, y-r:y+r] # cutout a portion of the science image
 wht = wht[x-r:x+r, y-r:y+r] # cutout a portion of the weight image
@@ -49,6 +49,10 @@ import numpy.ma as ma
 
 threshold = 2
 
-plt.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys_r')
-plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
+fig = plt.figure(figsize = (1, 1), dpi = sig.shape[0])
+ax = fig.add_axes((0.0, 0.0, 1.0, 1.0)) # define axes to cover entire field
+ax.axis('off') # turn off axes frame, ticks, and labels
+ax.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys')
+ax.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
 plt.show()
+fig.savefig('significance.png')

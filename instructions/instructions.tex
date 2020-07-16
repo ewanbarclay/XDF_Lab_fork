@@ -99,6 +99,9 @@ First, we'll look at analysing the pixel data in the image. \texttt{example1.py}
 First, model the noise as a gaussian centred at zero and estimate $\sigma$ for the F105W band. \hint\ there should be no signal contribution to the negative pixels so you can use them to measure $\sigma$. To do this first exclude positive pixels. $\sigma$ will then simply be $-P_{31.7}$ (i.e. the negative of the 31.7th percentile). Next, exclude pixels with magnitude $>10\sigma$ and plot both a density histogram (\hint\ use \texttt{plt.hist(..., density = True)}) of the pixel distribution and a normal distribution with the same $\sigma$ as you've just calculated. They won't align perfectly as the pixel distribution unsurprisingly contains more positive pixels.
 \end{question}
 
+\subsection{Cutting out an image}
+
+Often we only want to analyse a small portion (a cutout) of an image instead of the full image. This can be done by slicing the image array, for example  \texttt{cutout = img[xmin:xmax, xmin:xmax]} or via a \href{https://docs.python.org/3/library/functions.html?highlight=slice#slice}{\texttt{python slice}}. An example of slicing is given in \texttt{example2.py}.
 
 \subsection{Making plots of images}
 
@@ -117,7 +120,14 @@ A common task is to combine images either taken with the same filter (often) or 
 
 \subsection{Making colour images}
 
-Most people's experience with {\em Hubble} imaging is from the glorious colour images available \href{https://hubblesite.org}{here}. As explained in the introduction {\em Hubble}'s does not capture 'colour' iamges. Instead images in multiple filters are combined together. To obtain 'full-colour' requires at least 3 filters, thereby mimicing the human visual system. The simplest application is to simply map 3 filters to the red (R), green (G), and blue (B) channels. \texttt{example3.py} demonstrates how to do this using 3 of the ACS bands.
+Most people's experience with {\em Hubble} imaging is from the glorious colour images available \href{https://hubblesite.org}{here}. As explained in the introduction {\em Hubble}'s does not capture 'colour' iamges. Instead images in multiple filters are combined together. To obtain 'full-colour' requires at least 3 filters, thereby mimicing the human visual system. The simplest application is to simply map 3 filters to the red (R), green (G), and blue (B) channels. \texttt{example3.py} demonstrates how to do this using 3 of the ACS bands. Figure \ref{fig:centre_rgb} shows one of the outputs of \texttt{example3.py}.
+
+
+\begin{figure}\label{fig:centre_rgb}
+	\centering
+	\includegraphics[width=0.3\textwidth]{../examples/XDF_centre_rgb.png}
+	\caption{RGB image of the centre of the HUDF created by \texttt{example3.py}.}
+\end{figure}
 
 \begin{question}[\itshape (with optional title)]
 Using  \texttt{example3.py} and \texttt{example4.py} as guides produce a false-colour image of the entire masked XDF using \underline{all 8 filters}. You should define 3 groups of consecutive filters (e.g. \texttt{['f435w','f606w'], ['f775w','f850lp'], ['f105w','f125w','f140w','f160w']}), combine each group, and then combine those stacks together into an RGB image. Congratulations you've now created your own pretty HUDF image. By choosing different filters in each group and playing with the scaling you can make an entirely unique and original version.
@@ -137,14 +147,26 @@ Using  \texttt{example3.py} and \texttt{example4.py} as guides produce a false-c
 \setcounter{Question}{0}
 \section{Detecting and measuring sources}
 
-Proin lobortis efficitur dictum. Pellentesque vitae pharetra eros, quis dignissim magna. Sed tellus leo, semper non vestibulum vel, tincidunt eu mi. Aenean pretium ut velit sed facilisis. Ut placerat urna facilisis dolor suscipit vehicula. Ut ut auctor nunc. Nulla non massa eros. Proin rhoncus arcu odio, eu lobortis metus sollicitudin eu. Duis maximus ex dui, id bibendum diam dignissim id. Aliquam quis lorem lorem. Phasellus sagittis aliquet dolor, vulputate cursus dolor convallis vel. Suspendisse eu tellus feugiat, bibendum lectus quis, fermentum nunc. Nunc euismod condimentum magna nec bibendum. Curabitur elementum nibh eu sem cursus, eu aliquam leo rutrum. Sed bibendum augue sit amet pharetra ullamcorper. Aenean congue sit amet tortor vitae feugiat.
-
+The next part of the project concentrates on identifying, and measuring the properties of sources or objects.
 
 \begin{question}[\itshape (with optional title)]
-First of all, following \texttt{example3.py}, create a detection science and weight image by stacking the F105W, F125W, F140W, and F160W images together. You will use this image to detect faint sources.
+First of all, following \texttt{example4.py}, create a detection science and weight image by stacking the F105W, F125W, F140W, and F160W images together. You will use this image to detect faint sources.
 \end{question}
 
 \subsection{Significance maps}
+
+To identify sources we need to have an estimate of the noise in each pixel. In the context of {\em Hubble} this is provided by the weight (wht) map in each filter. The values in this image correspond to:
+\[
+{\rm weight} = \frac{1}{{\rm noise}^2}
+\]
+By dividing the signal (science, or sci) map by the noise map (derived from the weight map) we can obtain a signficance map, essentially the signa-to-noise in every pixel. \texttt{example5.py} demonstrates this and Figure \ref{fig:significance} shows the output.
+
+\begin{figure}\label{fig:significance}
+	\centering
+	\includegraphics[width=0.3\textwidth]{../examples/significance.png}
+	\caption{F105W significance image of the centre of the HUDF created by \texttt{example5.py}. Pixels coloured in grey have a signal-to-noise $<2$ with the colour scale stretching from $-2$ to $2$. Coloured pixels have a signal-to-noise $>2$ with a scale stretching from $2$ to $50$.}
+\end{figure}
+
 
 \begin{question}[\itshape (with optional title)]
 Create a significance map of a 400 pixel wide area centred on (3100, 1800).
@@ -153,14 +175,22 @@ Create a significance map of a 400 pixel wide area centred on (3100, 1800).
 
 \subsection{Segmentation}
 
-Segmentation (\url{https://en.wikipedia.org/wiki/Image_segmentation}) is one way of detecting sources (objects) in an image. In the simplest implementation we can identify collections of connected pixels which are all above some threshold. \texttt{example6.py} demonstrates the use of simple segmentation routines using the \texttt{astropy.photutils} module.
+Segmentation (\url{https://en.wikipedia.org/wiki/Image_segmentation}) is one way of detecting sources (objects) in an image. In the simplest implementation we can identify collections of connected pixels which are all above some threshold. Simple segmentation is controlled by two parameters: the minumum number of connected pixels $n_{\rm pixels}$ and the required significance ${\rm threshold}$ for each pixel. \texttt{example6.py} demonstrates the use of simple segmentation routines using the \texttt{astropy.photutils} module with the results of simple segmentation shown in Figure \ref{fig:segm}.
 
-\begin{question}[\itshape (with optional title)]
+\begin{figure}\label{fig:segm}
+	\centering
+	\includegraphics[width=0.3\textwidth]{../examples/segm.png}
+	\caption{F125W segmentation map assuming $n_{\rm pixels} = 5$ and ${\rm threshold} = 2.5$.}
+\end{figure}
+
+One problem with simple segmentation like this is that nearby objects are often merged together. To overcome this we can use de-blending techniques, again this is demonstrated in \texttt{example6.py}.
+
+\begin{question}[\itshape Detecting sources with segmentation]
 Create a segmentation image (with no de-blending) of the same region you looked at in 2b. Assuming $n_{\rm pixels} = 5$ and ${\rm threshold} = 2.5$. Next, systematically explore the impact of changing $n_{\rm pixels}$ (must be an integer) and ${\rm threshold}$ on the number of sources detected.
 \end{question}
 
 
-\begin{question}[\itshape (with optional title)]
+\begin{question}[\itshape The impact of de-blending]
 Sticking with $n_{\rm pixels} = 5$ and ${\rm threshold} = 2.5$ now explore the impact of the parameters that control de-blending on the number of sources.
 \end{question}
 
@@ -168,10 +198,11 @@ Sticking with $n_{\rm pixels} = 5$ and ${\rm threshold} = 2.5$ now explore the i
 \subsection{Measuring the signal (and noise) of sources}
 
 
+Our next task is to measure the signal (and noise) of our sources. Again, there are many of ways of doing this. One of the most popular methods is to place an aperture over each source and calculate the flux through in that aperture. This can be done easily using \href{https://photutils.readthedocs.io/en/stable/aperture.html}{\texttt{photutils.aperture}}. However, in this project we'll do something different. Instead of using an apterure we will simply sum the flux in the segmentation region of each object. This is demonstrated in \texttt{example7.py}.
+
 \begin{question}[\itshape Measure the signal of all sources]
 Measure the signal (e/s) of all the sources in the region. To do this you can combine the segmentation map with the detection science image. Plot a histogram. Do the same for the de-blended image and discuss the difference.
 \end{question}
-
 
 \begin{question}[\itshape Make a multi-band catalogue]
 Using the original (un-blended) segmentation map measure the signal and noise (or error) of every object in every single filter and create a catalogue using a dictionary. Save this catalogue for use later.

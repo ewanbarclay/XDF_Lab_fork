@@ -47,7 +47,7 @@ Now we're going to detect sources in a portion of the HUDF.
 [example6.py]
 
 
-Segmentation (https://en.wikipedia.org/wiki/Image_segmentation) is one way of detecting sources (objects) in an image. In the simplest implementation we can identify collections of connected pixels which are all above some threshold. example6.py demonstrates the use of simple segmentation routines using the astropy.photutils module.
+
 
 # 2c: Create a segmentation image (with no de-blending) of the same region you looked at in 2b. Assuming npixels = 5 and threshold = 2.5. Next, systematically explore the impact of changing npixels (must be an integer) and threshold on the number of sources detected.
 

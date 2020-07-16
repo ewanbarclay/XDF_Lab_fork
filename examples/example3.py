@@ -31,15 +31,15 @@ for channel in 'RGB':
     norm = cm.colors.Normalize(vmin, vmax) # normalisation function
     im[channel] = norm(im[channel]) # apply normalisation function
 
-    # --- set masked values to zero
-    im[channel] = np.ma.filled(im[channel], 0.0) # return masked array with masked values set to 0.0 (this makes those pixels black)
+    # --- set masked values to zero (this makes those pixels black)
+    im[channel] = np.ma.filled(im[channel], 0.0) # return masked array with masked values set to 0.0
 
 
 
 
 rgb = np.dstack((im['R'],im['G'],im['B'])) # stack images into a single array
 
-# --- make image and show
+# --- make a plot of the full (masked) image and save it
 
 dpi = rgb.shape[0] # set dots per inch equal to the number of pixels.
 fig = plt.figure(figsize = (1, 1), dpi = dpi)
@@ -48,3 +48,23 @@ ax.axis('off') # turn off axes frame, ticks, and labels
 
 ax.imshow(rgb) # shouldn't see much because the scale is dominated by outlier pixels
 fig.savefig('XDF_rgb.png')
+
+
+
+# --- make a plot of the central 300 pixels of the image
+
+x = rgb.shape[0] // 2 # pixel x-centre of cutout, must be an integer
+y = rgb.shape[1] // 2  # pixel y-centre of cutout, must be an integer
+r = 150 # width/2 of cutout, must be int
+
+slices = [slice(x-r,x+r,None),slice(y-r,y+r,None)]
+
+centre = rgb[slices]
+
+dpi = centre.shape[0] # set dots per inch equal to the number of pixels.
+fig = plt.figure(figsize = (1, 1), dpi = dpi)
+ax = fig.add_axes((0.0, 0.0, 1.0, 1.0)) # define axes to cover entire field
+ax.axis('off') # turn off axes frame, ticks, and labels
+
+ax.imshow(centre) # shouldn't see much because the scale is dominated by outlier pixels
+fig.savefig('XDF_centre_rgb.png')

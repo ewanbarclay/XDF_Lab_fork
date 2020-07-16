@@ -36,3 +36,11 @@ import matplotlib.pyplot as plt
 
 plt.imshow(cutout, vmin = 0, vmax = 10*sigma, cmap = 'bone')
 plt.show()
+
+
+# --- this does the same as above
+
+slices = [slice(x-r,x+r,None),slice(y-r,y+r,None)]
+
+plt.imshow(sci[slices], vmin = 0, vmax = 10*sigma, cmap = 'bone')
+plt.show()
