@@ -24,23 +24,51 @@ sigma = -np.percentile(negpix, 31.7) # measure \sigma as demonstrated in exampl
 
 # --- cut out a portion of the image for analysis
 
-x = 2500 # pixel x-centre of cutout, must be an integer
-y = 2500 # pixel y-centre of cutout, must be an integer
-r = 100 # width/2 of cutout, must be int
 
-cutout = sci[x-r:x+r, y-r:y+r] # cutout a portion of the image
 
-# --- plot the cutout, choosing sensible scale (set by vmin and vmax)
+
+x = sci.shape[0] // 2 # pixel x-centre of cutout, must be an integer
+y = sci.shape[1] // 2  # pixel y-centre of cutout, must be an integer
+r = 150 # width/2 of cutout, must be int
+
+# two ways of cutting out, either using a Python slice object
+
+# slices = [slice(x-r,x+r,None),slice(y-r,y+r,None)]
+# centre = sci[slices]
+
+# or by simply doing:
+
+centre = sci[x-r:x+r, y-r:y+r]
+
+
+# --- NOW MAKE A PLOT OF THE CUTOUT
 
 import matplotlib.pyplot as plt
 
-plt.imshow(cutout, vmin = 0, vmax = 10*sigma, cmap = 'bone')
+# without scaling the image or providing limits (vmin, vmax) imshow will automatically scale the image to the largest and smallest values. However, as we saw in example1.py we sometimes have errnously high or low pixels.
+
+plt.imshow(centre) # no scaling/clipping
 plt.show()
 
+# there are various things we can do here. For example, we could give imshow a min and max value to map between (any pixel values outside this range will be mapped to end of the colour scale)
 
-# --- this does the same as above
+vmin = 0
+vmax = sigma*20
 
-slices = [slice(x-r,x+r,None),slice(y-r,y+r,None)]
 
-plt.imshow(sci[slices], vmin = 0, vmax = 10*sigma, cmap = 'bone')
+plt.imshow(centre, vmin = vmin, vmax = vmax) # any value >10*sigma will map to the end of the scale
 plt.show()
+
+# we can also change the default colour map (https://matplotlib.org/examples/color/colormaps_reference.html)
+
+plt.imshow(centre, vmin = vmin, vmax = vmax, cmap = 'magma') # any value >10*sigma will map to the end of the scale
+plt.show()
+
+# instead of showing images in interactive mode we often want to save a version. By default matplotlib provides space for axes labels etc. The below makes the axes (where the image is plotted) stretch across the full canvas and turns off the frame, ticks, and labels. This also sets the dots-per-inch (dpi) to be the equal to the size of the image in pixels. By setting the size to 1 inch we will then have a figure which is pixel perfect.
+
+dpi = centre.shape[0] # set dots per inch equal to the number of pixels.
+fig = plt.figure(figsize = (1, 1), dpi = dpi)
+ax = fig.add_axes((0.0, 0.0, 1.0, 1.0)) # define axes to cover entire field
+ax.axis('off') # turn off axes frame, ticks, and labels
+ax.imshow(centre, vmin = vmin, vmax = vmax, cmap = 'magma') # shouldn't see much because the scale is dominated by outlier
+fig.savefig('XDF_centre_f125w.png')

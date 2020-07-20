@@ -49,10 +49,16 @@ import numpy.ma as ma
 
 threshold = 2
 
+
+plt.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys')
+plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
+plt.show()
+
+# version to save
+
 fig = plt.figure(figsize = (1, 1), dpi = sig.shape[0])
 ax = fig.add_axes((0.0, 0.0, 1.0, 1.0)) # define axes to cover entire field
 ax.axis('off') # turn off axes frame, ticks, and labels
 ax.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys')
 ax.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
-plt.show()
 fig.savefig('significance.png')
