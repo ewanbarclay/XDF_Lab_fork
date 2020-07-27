@@ -25,4 +25,5 @@ plt.scatter(r1, r2)
 
 plt.xlim([-0.3,2])
 plt.ylim([-0.3,2])
-plt.show()
+# plt.show()
+plt.savefig('figures/3a.pdf')

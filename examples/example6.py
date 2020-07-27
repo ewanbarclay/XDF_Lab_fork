@@ -46,6 +46,11 @@ npixels = 5 # require at least 5 connected pixels
 
 segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
 
+
+print(f'total number of sources in original map: {segm.max_label}')
+# print(f'total number of sources in original map: {segm.nlabels}') # also works
+# print(f'total number of sources in original map: {np.max(segm.data)}') # also works
+
 # The segmentation image has the same dimensions as the input image. Each pixel in the segmentation image has an integer value. If $p_{i,j}=0$ this means that pixel isn't associated with a source. If $p_{i,j}>0$ that pixel is part of an object. Using imshow on the segmentation map will automatically colour each image by a different colour.
 
 import matplotlib.pyplot as plt
@@ -64,6 +69,9 @@ fig.savefig('segm.png')
 from photutils import deblend_sources
 
 segm_deblend = deblend_sources(sig, segm, npixels=npixels, nlevels=32, contrast=0.001)
+
+print(f'total number of sources in debelended map: {segm_deblend.max_label}')
+
 
 fig = plt.figure(figsize = (1, 1), dpi = segm_deblend.data.shape[0])
 ax = fig.add_axes((0.0, 0.0, 1.0, 1.0)) # define axes to cover entire field

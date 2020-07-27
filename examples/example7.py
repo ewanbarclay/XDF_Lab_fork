@@ -39,6 +39,7 @@ sig = sci/noise # signifance map
 from photutils import detect_sources
 import matplotlib.pyplot as plt
 
+
 threshold = 2.5 # require each pixel have a significance of >2.5 (since we're using the significance image)
 npixels = 5 # require at least 5 connected pixels
 
@@ -46,9 +47,16 @@ segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
 
 # --- let's now plot the segmentation map but only for a single source
 
-i = 11 # this corresponds to the 11th object NOT the 12th. The 0 (zero) index corresponds to the background.
+# segm.data is the segmentation map. In this map pixels are labelled as either "0" if they are part of the background (i.e. not associated with a source) or >0 if they belong to a source. Each discrete object has a different number.
 
-masked_segm = np.ma.masked_where(segm.data != i, segm)
+# i = 11 # this corresponds to the 11th object NOT the 12th. The 0 (zero) index corresponds to the background. The choice of object 11 is completely arbitrary.
+
+
+import random
+i = random.randint(1, segm.nlabels) # choose a random object 
+
+
+masked_segm = np.ma.masked_where(segm.data != i, segm) # mask all pixels except object i
 
 plt.imshow(masked_segm, cmap = 'rainbow') # plot masked segmentation map
 plt.show()
