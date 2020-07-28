@@ -4,6 +4,40 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from photutils import detect_sources
+
+
+# --- function to detect sources (see below for context)
+
+def detect(sci, wht):
+
+    noise = 1/np.sqrt(wht) # noise map
+    sig = sci/noise # significance map
+
+    # --- detect sources via segmentation
+    threshold = 2.5
+    npixels = 5
+
+    try:
+
+        segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
+
+        signal = np.sum(sci[np.where(segm.data==1)])
+        print(f'the signal is: {signal}')
+
+        error = np.sqrt(np.sum(noise[np.where(segm.data==1)]**2))
+        print(f'the error (noise) is: {error}')
+        
+        print(f'the signal-to-noise is: {signal/error}')
+
+    except:
+
+        print('no sources detected')
+
+
+
+
+
 
 # --- vmin/vmax for plotting images
 vmin = -10
@@ -20,7 +54,7 @@ x, y = np.meshgrid(range(size), range(size))
 x_c = 35 # x-centre
 y_c = 35 # y-centre
 sigma = 2 # width of gaussian
-A = 3 # amplitude
+A = 5 # amplitude
 source = A*np.exp(-( ((x-x_c)**2 + (y-y_c)**2)  / (2.0*sigma**2 ) ) ) # 2D gaussian
 
 # --- show the source
@@ -46,6 +80,10 @@ for i, bkg_value in enumerate(bkg_values):
     wht[i] *= 1/bkg_value**2 # just uniform weight image
     sci[i] = bkg_value*np.random.randn(size, size) # make gaussian random background
     sci[i] += source # add in source
+
+    # --- detect sources
+    print(f'---- frame {i}: bkg = {bkg_value}')
+    detect(sci[i], wht[i])
 
 
 # --- plot both the science frame and the significance (science/noise) image
@@ -83,7 +121,10 @@ plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = th
 plt.axis('off')
 plt.show()
 
-
+# --- detect sources
+print()
+print('---- naive stack')
+detect(csci, cwht)
 
 
 # --- properly stack science images
@@ -108,3 +149,8 @@ plt.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys')
 plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
 plt.axis('off')
 plt.show()
+
+# --- detect sources
+print()
+print('---- weighted stack')
+detect(csci, cwht)
