@@ -27,7 +27,7 @@ def detect(sci, wht):
 
         error = np.sqrt(np.sum(noise[np.where(segm.data==1)]**2))
         print(f'the error (noise) is: {error}')
-        
+
         print(f'the signal-to-noise is: {signal/error}')
 
     except:
@@ -60,8 +60,8 @@ source = A*np.exp(-( ((x-x_c)**2 + (y-y_c)**2)  / (2.0*sigma**2 ) ) ) # 2D gauss
 # --- show the source
 plt.imshow(source, cmap = 'magma', vmin = 0, vmax = vmax)
 plt.axis('off')
-plt.show()
-
+plt.savefig('figs/source.pdf')
+plt.clf()
 
 
 # Now we are going to create 5 individual images containing both the source and noise
@@ -104,7 +104,8 @@ for i in range(len(bkg_values)):
     axes[1, i].axis('off')
 
 plt.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0.01, hspace=0.01)
-plt.show()
+plt.savefig('figs/frames.pdf')
+plt.clf()
 
 
 
@@ -119,7 +120,8 @@ sig = csci*np.sqrt(cwht) # this is the same as sci/noise
 plt.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys')
 plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
 plt.axis('off')
-plt.show()
+plt.savefig('figs/naive.pdf')
+plt.clf()
 
 # --- detect sources
 print()
@@ -148,7 +150,8 @@ sig = csci*np.sqrt(cwht)
 plt.imshow(sig, vmin = -threshold, vmax = threshold, cmap = 'Greys')
 plt.imshow(np.ma.masked_where(sig <= threshold, sig), cmap = 'plasma', vmin = threshold, vmax = 50)
 plt.axis('off')
-plt.show()
+plt.savefig('figs/weighted.pdf')
+plt.clf()
 
 # --- detect sources
 print()

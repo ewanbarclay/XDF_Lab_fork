@@ -1,0 +1,83 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Lachaise Assignment
+% LaTeX Template
+% Version 1.0 (26/6/2018)
+%
+% This template originates from:
+% http://www.LaTeXTemplates.com
+%
+% Authors:
+% Marion Lachaise & François Févotte
+% Vel (vel@LaTeXTemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass{article}
+\usepackage{hyperref}
+
+\newcommand{\hint}{\textbf{Hint:}}
+
+
+\input{structure.tex} % Include the file specifying the document structure and custom commands
+
+%----------------------------------------------------------------------------------------
+%	ASSIGNMENT INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Stacking tutorial} % Title of the assignment
+
+\author{Stephen Wilkins\\ \texttt{s.wilkins@sussex.ac.uk}} % Author name and email address
+
+\date{University of Sussex --- \today} % University, school and/or department name(s) and a date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\section*{Introduction} % Unnumbered section
+
+
+
+
+
+\begin{figure}\label{fig:source}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../code/figs/source.pdf}
+	\caption{The input source. This is simply a 2D gaussian.}
+\end{figure}
+
+\begin{figure}\label{fig:frames}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../code/figs/frames.pdf}
+	\caption{Science (top) and significance (bottom) maps of 5 frames. Each includes a noisey background (generated with \texttt{np.random.randn}) and the source. The first four have the same $\sigma$ while the $\sigma$ of the final frame is 5 times larger. THe source is clearly visible in the first 4 frames but less clear, and possibly undetected, in the final frame. }
+\end{figure}
+
+\begin{figure}\label{fig:naive}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../code/figs/naive.pdf}
+	\caption{A naive stack of all 5 frames. This should be slightly worse than the first four frames.}
+\end{figure}
+
+\begin{figure}\label{fig:weighted}
+	\centering
+	\includegraphics[width=0.7\textwidth]{../code/figs/weighted.pdf}
+	\caption{A weighted stack of all 5 frames. The source should be noticeably clearer.}
+\end{figure}
+
+
+
+
+\end{document}
