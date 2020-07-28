@@ -204,7 +204,7 @@ Sticking with $n_{\rm pixels} = 5$ and ${\rm threshold} = 2.5$ now explore the i
 \subsection{Measuring the signal (and noise) of sources}
 
 
-Our next task is to measure the signal (and noise) of our sources. Again, there are many of ways of doing this. One of the most popular methods is to place an aperture over each source and calculate the flux through in that aperture. This can be done easily using \href{https://photutils.readthedocs.io/en/stable/aperture.html}{\texttt{photutils.aperture}}. However, in this project we'll do something different. Instead of using an apterure we will simply sum the flux in the segmentation region of each object. This is demonstrated in \texttt{example7.py}.
+Our next task is to measure the signal (and noise) of our sources. Again, there are many of ways of doing this. We'll start off by simply summing the flux in the segmentation region of each object. This is sometimes referred to as an {\em isophotal} flux though technically this is only truly isophotal if the noise is uniform. This is demonstrated in \texttt{example7.py} and \texttt{example8.py}.
 
 \begin{question}[\itshape Measure the signal of all sources]
 Measure the signal (e/s) of all the sources in the region. To do this you can combine the segmentation map with the detection science image. Plot a histogram. Do the same for the de-blended image and discuss the difference.
@@ -214,7 +214,12 @@ Measure the signal (e/s) of all the sources in the region. To do this you can co
 Using the original (un-blended) segmentation map measure the signal and noise (or error) of every object in every single filter and create a catalogue using a dictionary. Save this catalogue for use later.
 \end{question}
 
+A populat alternative is to simply place an aperture over each source and calculate the flux through in that aperture. This can be done easily using \href{https://photutils.readthedocs.io/en/stable/aperture.html}{\texttt{photutils.aperture}}. This is demonstrated in \texttt{example9.py}.
 
+
+\begin{question}[\itshape Aperture photometry STRETCH]
+Repeat 2f but using aperture photometry instead. Assume an aperture $5$ pixels in radius.
+\end{question}
 
 %----------------------------------------------------------------------------------------
 %	Part 3
@@ -272,6 +277,10 @@ Using \texttt{example7.py} as a guide make detection image thumbnail of your can
 
 \begin{question}[\itshape More thumbnails]
 Following on from 3c also make thumbails in each band (\hint\ use \texttt{subplots} for ease) in addition to an RGB thumbnail.
+\end{question}
+
+\begin{question}[\itshape Aperture photometry STRETCH]
+Repeat 3a but using your new aperture photometry based catalogue instead. Produce a plot comparing the flux ratios with the different methods.
 \end{question}
 
 %----------------------------------------------------------------------------------------
