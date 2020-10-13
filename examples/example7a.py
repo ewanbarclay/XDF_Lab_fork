@@ -1,7 +1,7 @@
 
 
 
-# --- In this example we look at aperture photometry.
+# --- In this example we look at the properties of one of the sources identified by segmentation.
 
 
 import numpy as np
@@ -34,9 +34,10 @@ sig = sci/noise # signifance map
 
 
 
-# --- now run segmentation on the image to detect sources.
+# --- now run segmentation on the image.
 
 from photutils import detect_sources
+import matplotlib.pyplot as plt
 
 
 threshold = 2.5 # require each pixel have a significance of >2.5 (since we're using the significance image)
@@ -44,45 +45,35 @@ npixels = 5 # require at least 5 connected pixels
 
 segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
 
-
-# --- get various properties of the sources, crucially inclusing their centres
-
-from photutils import source_properties, CircularAperture
-
-cat = source_properties(sci, segm)
-
-
-# --- get a list of positions (x,y) of the sources
-
-positions = []
-for obj in cat:
-    positions.append(np.transpose((obj.xcentroid.value, obj.ycentroid.value)))
-
-# --- make a CicrcularAperture object. This can be plotted but is mostly used for the aperture photometry.
-
-r = 5. # radius of aperture in pixels
-apertures = CircularAperture(positions, r)
-
-# --- let's make a plot of the sources and the apertures
-
-import matplotlib.pyplot as plt
-
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 12.5))
-ax1.imshow(sci, origin='lower', cmap='Greys_r')
-ax1.set_title('Science')
-cmap = segm.make_cmap(random_state=12345)
-ax2.imshow(segm, origin='lower', cmap=cmap)
-ax2.set_title('Segmentation Image')
-for aperture in apertures:
-    aperture.plot(axes=ax1, color='white', lw=1.5)
-    aperture.plot(axes=ax2, color='white', lw=1.5)
+plt.imshow(segm, cmap = 'rainbow') # plot masked segmentation map
 plt.show()
 
 
-# --- now let's do some photometry
+# --- calculate object positions
+
+from photutils import source_properties
+
+cat = source_properties(sci, segm)
+positions = [np.transpose((obj.xcentroid.value, obj.ycentroid.value)) for obj in cat]
+
+
+# --- display single object
+
+i = 8
+
+mask = ~((segm.data==i)|(segm.data==0)) # only background + object
+# mask = segm.data!=i # only object
+masked_segm = np.ma.array(segm, mask = mask) # mask all pixels except object i
+
+plt.imshow(masked_segm, cmap = 'rainbow') # plot masked segmentation map
+plt.show()
+
+from photutils import CircularAperture
+
+radii = np.arange(1,21,1)
+apertures = [CircularAperture(positions[i-1], r=r) for r in radii]
 
 from photutils import aperture_photometry
 
-phot_table = aperture_photometry(sci, apertures)
-phot_table['aperture_sum'].info.format = '%.3f'  # for consistent table output
+phot_table = aperture_photometry(sci, apertures, mask = mask)
 print(phot_table)

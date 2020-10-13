@@ -76,5 +76,7 @@ for f in filters:
     # --- convert aperture flux column to an array and place in output dictionary
     aper_cat[f+'_noise'] = np.sqrt(np.array(phot_table['aperture_sum']))
 
+    print(phot_table)
+
 
 pickle.dump(aper_cat, open('data/aper_cat.p','wb'))

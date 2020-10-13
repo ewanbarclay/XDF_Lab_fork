@@ -45,6 +45,19 @@ npixels = 5 # require at least 5 connected pixels
 
 segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
 
+
+# ---
+
+unique, counts = np.unique(segm.data, return_counts=True)
+
+print(unique)
+print(counts)
+
+
+
+
+
+
 # --- let's now plot the segmentation map but only for a single source
 
 # segm.data is the segmentation map. In this map pixels are labelled as either "0" if they are part of the background (i.e. not associated with a source) or >0 if they belong to a source. Each discrete object has a different number.
@@ -53,7 +66,7 @@ segm = detect_sources(sig, threshold, npixels=npixels) # make segmentation image
 
 
 import random
-i = random.randint(1, segm.nlabels) # choose a random object 
+i = random.randint(1, segm.nlabels) # choose a random object
 
 
 masked_segm = np.ma.masked_where(segm.data != i, segm) # mask all pixels except object i
